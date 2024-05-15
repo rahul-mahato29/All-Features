@@ -3,15 +3,19 @@ import { useState, useEffect } from 'react';
 function App() {
   const [pin, setPin] = useState("");
 
-  //parameter - 110001 -> to get data
-  const SearchPin = async (parameter) => {
-    const data = await fetch(`https://api.postalpincode.in/pincode/${parameter}`).then((res) => res.json());
-    console.log(data);
-  }
-
+  // //parameter - 110001 -> to get data
   useEffect(() => {
-    SearchPin(pin);
-  }, [pin]) //when I will given any input value then it will fetch data. (extra-fetch request (without debouncing))
+    const debouncing = setTimeout( async () => {
+      const data = await fetch(`https://api.postalpincode.in/pincode/110001`).then((res) => res.json());
+      console.log(data);
+    }, 2000)
+ 
+    return () => {
+      clearTimeout(debouncing)
+    }
+  }, [pin]) //when I will given any input value then after 2 second it will fetch data, 
+            //so in between these 2 seconds we will provide all the input data, so it will 
+            //not fetch the data in each input, hence reduceses the number of fetch requrest.
 
   return (
     <main className='border-2 border-black p-5 bg-violet-300'>
